@@ -7,6 +7,8 @@ const int MAX_ATTEMPTS = 3; // Número máximo de tentativas
 const char *CORRECT_CODE = "122024"; // Código correto
 const byte PIN_RELAY = 3; // Pino do Relé
 const byte PIN_BUTTON = 2; // Pino do Botão
+unsigned int LAST_KEY_TIME = 0; // Define o Tempo Anterior
+unsigned int DEBOUNCE_BUTTON = 50; // Debounce do Botão
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); // Endereço do I2C e dimensões do LCD (colunas, linhas)
 
@@ -42,7 +44,8 @@ void setup() {
 
 // FUNÇÃO LOOP
 void loop() {
-  if (digitalRead(PIN_BUTTON) == LOW) { // Botão pressionado
+  unsigned int currentTime = millis();
+  if (digitalRead(PIN_BUTTON) == LOW && (currentTime - LAST_KEY_TIME) > DEBOUNCE_BUTTON) { // Botão pressionado
     digitalWrite(PIN_RELAY, LOW); // Desliga o relé
     delay(1000); // Pequeno atraso para evitar leitura constante
   }
@@ -79,7 +82,6 @@ void keyPadAccess() {
           lcd.print("Acesso Negado");
           clearLCD();
         }
-
         inputCode = ""; // Reseta o código após falha
       }
     } else if (key == '*') { // * É usado para apagar o último caractere
