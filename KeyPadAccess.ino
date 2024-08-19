@@ -47,7 +47,6 @@ void loop() {
   unsigned int currentTime = millis();
   if (digitalRead(PIN_BUTTON) == LOW && (currentTime - LAST_KEY_TIME) > DEBOUNCE_BUTTON) { // Botão pressionado
     digitalWrite(PIN_RELAY, LOW); // Desliga o relé
-    delay(1000); // Pequeno atraso para evitar leitura constante
   }
 
   if (accessBlocked) {
